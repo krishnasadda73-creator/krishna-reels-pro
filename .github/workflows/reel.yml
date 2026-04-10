@@ -34,3 +34,9 @@ jobs:
         run: python main.py
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Upload Reel
+        uses: actions/upload-artifact@v4
+        with:
+          name: reel-video
+          path: reel.mp4
