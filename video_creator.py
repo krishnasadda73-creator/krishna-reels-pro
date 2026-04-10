@@ -1,15 +1,17 @@
-import requests
 import subprocess
+import random
+from pathlib import Path
 
-def download_file(url, filename):
-    r = requests.get(url)
-    with open(filename, "wb") as f:
-        f.write(r.content)
-    return filename
+IMAGE_DIR = Path("assets/images")
+BGM_DIR = Path("assets/bgm")
+
+def get_random_file(folder):
+    files = list(folder.glob("*"))
+    return str(random.choice(files))
 
 def create_video(text):
-    image = download_file("https://picsum.photos/720/1280", "image.jpg")
-    audio = download_file("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", "audio.mp3")
+    image = get_random_file(IMAGE_DIR)
+    audio = get_random_file(BGM_DIR)
 
     safe_text = text.replace(":", "\\:").replace("'", "\\'").replace("\n", " ")
 
