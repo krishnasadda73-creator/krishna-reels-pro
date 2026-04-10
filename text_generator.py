@@ -1,12 +1,11 @@
-import google.generativeai as genai
+from google import genai
 import os
 
-genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-
-model = genai.GenerativeModel("gemini-1.5-flash")
+client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 
 def generate_text():
-    response = model.generate_content(
-        "Short Krishna motivational quote in Hindi"
+    response = client.models.generate_content(
+        model="gemini-1.5-flash",
+        contents="Write a short Krishna motivational quote in Hindi"
     )
     return response.text.strip()
