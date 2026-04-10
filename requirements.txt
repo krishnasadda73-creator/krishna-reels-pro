@@ -1,5 +1,2 @@
-moviepy
-google-generativeai
-imageio
-imageio-ffmpeg
-numpy
+requests
+google-genai
