@@ -1,18 +1,36 @@
-from moviepy.editor import *
-import random
-import os
+import requests
+import subprocess
+
+def download_file(url, filename):
+    r = requests.get(url)
+    with open(filename, "wb") as f:
+        f.write(r.content)
+    return filename
 
 def create_video(text):
-    image = "https://picsum.photos/720/1280"
-    audio = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+    image = download_file("https://picsum.photos/720/1280", "image.jpg")
+    audio = download_file("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", "audio.mp3")
 
-    clip = ImageClip(image).set_duration(10)
+    safe_text = text.replace(":", "\\:").replace("'", "\\'").replace("\n", " ")
 
-    txt = TextClip(text, fontsize=50, color='white', method='caption', size=(720,1280))
-    txt = txt.set_position("center").set_duration(10)
+    output = "reel.mp4"
 
-    video = CompositeVideoClip([clip, txt])
+    cmd = [
+        "ffmpeg",
+        "-y",
+        "-loop", "1",
+        "-i", image,
+        "-i", audio,
+        "-t", "10",
+        "-vf",
+        f"drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='{safe_text}':fontcolor=white:fontsize=40:x=(w-text_w)/2:y=(h-text_h)/2",
+        "-c:v", "libx264",
+        "-pix_fmt", "yuv420p",
+        "-c:a", "aac",
+        "-shortest",
+        output
+    ]
 
-    video.write_videofile("reel.mp4", fps=24)
+    subprocess.run(cmd, check=True)
 
-    return "reel.mp4"
+    return output
